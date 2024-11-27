@@ -1,0 +1,19 @@
+services:
+  event-producer:
+    command: sh -c "python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    build: ./app
+    volumes:
+      - ./app:/app
+    ports:
+      - "8000:8000"
+
+  event-producer-worker:
+    command: sh -c "faust -A main:faustApp worker -l info"
+    build: ./app
+    volumes:
+      - ./app:/app
+
+networks:
+  default:
+    external: true
+    name: internal
